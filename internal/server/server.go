@@ -14,13 +14,13 @@ type Server struct {
 }
 
 func NewServer(logger *log.Logger) *Server {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", handlers.IndexHandler)
-	mux.HandleFunc("/upload", handlers.MorseHandler)
+	router := http.NewServeMux()
+	router.HandleFunc("/", handlers.IndexHandler)
+	router.HandleFunc("/upload", handlers.MorseHandler)
 
 	srv := &http.Server{
 		Addr:         ":8080",
-		Handler:      mux,
+		Handler:      router,
 		ErrorLog:     logger,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,

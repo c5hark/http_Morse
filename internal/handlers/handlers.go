@@ -12,7 +12,8 @@ import (
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "../index.html")
+	w.Header().Set("Content-Type", "text/html")
+	http.ServeFile(w, r, "index.html")
 }
 
 func MorseHandler(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +36,8 @@ func MorseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	converted, err := service.TranslateToMorse(string(content))
+	originalText := string(content)
+	converted, err := service.TranslateToMorse(originalText)
 	if err != nil {
 		http.Error(w, "failed to convert the file", http.StatusInternalServerError)
 		return
@@ -55,5 +57,5 @@ func MorseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintln(w, "Результат:\n"+converted)
+	fmt.Fprintf(w, "Результат:\n%s\n\nИсходный текст:\n%s\n", converted, originalText)
 }

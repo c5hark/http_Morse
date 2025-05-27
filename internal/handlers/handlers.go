@@ -13,7 +13,7 @@ import (
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	http.ServeFile(w, r, "../index.html")
+	http.ServeFile(w, r, "index.html")
 }
 
 func MorseHandler(w http.ResponseWriter, r *http.Request) {

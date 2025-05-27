@@ -29,13 +29,7 @@ func TranslateToMorse(text string) (string, error) {
 }
 
 func isMorse(text string) bool {
-	for _, r := range text {
-		switch r {
-		case ' ', '-', '.', '/':
-			continue
-		default:
-			return false
-		}
-	}
-	return true
+	return !strings.ContainsFunc(text, func(r rune) bool {
+		return r != ' ' && r != '-' && r != '.' && r != '/'
+	})
 }

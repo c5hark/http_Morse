@@ -13,10 +13,14 @@ import (
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	http.ServeFile(w, r, "index.html")
+	http.ServeFile(w, r, "../index.html")
 }
 
 func MorseHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		http.Error(w, "form parsing error", http.StatusInternalServerError)
@@ -37,6 +41,7 @@ func MorseHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	originalText := string(content)
+
 	converted, err := service.TranslateToMorse(originalText)
 	if err != nil {
 		http.Error(w, "failed to convert the file", http.StatusInternalServerError)
@@ -57,5 +62,9 @@ func MorseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Результат:\n%s\n\nИсходный текст:\n%s\n", converted, originalText)
+	_, err = fmt.Fprintf(w, "Результат:\n%s\n\nИсходный текст:\n%s\n", converted, originalText)
+	if err != nil {
+		http.Error(w, "failed to write response", http.StatusInternalServerError)
+		return
+	}
 }
